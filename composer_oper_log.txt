@@ -1,0 +1,463 @@
+composer card delete -n PeerAdmin@zperf-network-org2-only
+composer card create -p org2only.json -u PeerAdmin -c Admin@org2.example.com-cert.pem -k Admin@org2.example.com_sk -r PeerAdmin -r ChannelAdmin
+composer card import -f PeerAdmin@zperf-network-org2-only.card
+
+composer card create -p org1only.json -u PeerAdmin -c Admin@org1.example.com-cert.pem -k Admin@org1.example.com_sk -r PeerAdmin -r ChannelAdmin
+composer card import -f PeerAdmin@zperf-network-org1-only.card
+composer identity request -c PeerAdmin@zperf-network-org1-only -u admin -s adminpw -d alice
+'admin' was successfully requested and the certificates stored in '/home/ibmadmin/zperfconf/alice'
+
+composer identity request -c PeerAdmin@zperf-network-org2-only -u admin -s adminpw -d bob
+'admin' was successfully requested and the certificates stored in '/home/ibmadmin/zperfconf/bob'
+
+composer card create -p org1org2.json -u PeerAdmin -c Admin@org1.example.com-cert.pem -k Admin@org1.example.com_sk -r PeerAdmin -r ChannelAdmin
+composer card import -f PeerAdmin@zperf-network-org1-org2.card
+
+composer card create -p org2org1.json -u PeerAdmin -c Admin@org2.example.com-cert.pem -k Admin@org2.example.com_sk -r PeerAdmin -r ChannelAdmin
+composer card import -f PeerAdmin@zperf-network-org2-org1.card
+
+composer runtime install -c PeerAdmin@zperf-network-org1-only -n perishable-iot-network
+
+composer runtime install -c PeerAdmin@def-local-network -n fund-clearing
+composer network start -c PeerAdmin@def-local-network -a fund-clearing.bna -A admin -S adminpw
+composer card import -f admin@fund-clearing.card
+composer-rest-server
+ admin@fund-clearing
+ibmadmin@BCVM02:~/fabric-tools/sampConf$ composer-rest-server
+? Enter the name of the business network card to use: admin@fund-clearing
+? Specify if you want namespaces in the generated REST API: never use namespaces
+? Specify if you want to enable authentication for the REST API using Passport: No
+? Specify if you want to enable event publication over WebSockets: Yes
+? Specify if you want to enable TLS security for the REST API: No
+
+To restart the REST server using the same options, issue the following command:
+   composer-rest-server -c admin@fund-clearing -n never -w true
+====>
+
+composer network ping -c  bank002@fund-clearing
+   composer identity issue -c admin@fund-clearing -f bank002.card -u bank002 -a "resource:org.acme.fundclearing.BankingParticipant#002"
+   composer  card import -f bank002.card 
+   composer network ping -c  bank002@fund-clearing
+   composer-rest-server -c bank002@fund-clearing -p 3002 -n never -w true &
+   composer-rest-server -c bank001@fund-clearing -p 3001 -n never -w true &
+
+cp peerOrganizations/org1.example.com/users/Admin@org1.example.com/signcerts/Admin@org1.example.com-cert.pem /home/ibmadmin/zperfconf/Admin@org1.example.com-cert.pem
+
+cp peerOrganizations/org1.example.com/users/Admin@org1.example.com/keystore/9022d671ceedbb24af3ea69b5a8136cc64203df6b9920e26f48123fcfcb1d2e9_sk  /home/ibmadmin/zperfconf/Admin@org1.example.com_sk
+
+cp ../peerOrganizations/org1.example.com/users/Admin@org1.example.com/signcerts/Admin@org1.example.com-cert.pem /home/sunhwei/zperfconf/Admin@org1.example.com-cert.pem
+
+cp ../peerOrganizations/org1.example.com/users/Admin@org1.example.com/keystore/9022d671ceedbb24af3ea69b5a8136cc64203df6b9920e26f48123fcfcb1d2e9_sk  /home/sunhwei/zperfconf/Admin@org1.example.com_sk
+=====log from ca-org1 ===================
+2018/01/31 02:48:18 [DEBUG] Received request
+POST /api/v1/enroll
+Authorization: Basic YWRtaW46YWRtaW5wdw==
+{"caName":"ca-org1","certificate_request":"-----BEGIN CERTIFICATE REQUEST-----\r\nMIHMMHICAQAwEDEOMAwGA1UEAwwFYWRtaW4wWTATBgcqhkjOPQIBBggqhkjOPQMB\r\nBwNCAATqRPVpL+U6xooZcjtfR3qFbWMrtR6Xv7cjVZeUkrlymbj43lHxflh8rSXh\r\nAJn2oYHn3wOICPe+cH/tSqDOg4jqoAAwDAYIKoZIzj0EAwIFAANIADBFAiAZUw0H\r\ngvet3u+ZiC5Xw2c66wNUrAhZW+Gh7A/6M7fsyQIhALQKjAsdKSy1XUgr91CpFLDq\r\n1OFstJsNTTppL/Pg3b4s\r\n-----END CERTIFICATE REQUEST-----\r\n"}
+2018/01/31 02:48:18 [DEBUG] Directing traffic to CA ca-org1
+2018/01/31 02:48:18 [DEBUG] DB: Getting identity admin
+2018/01/31 02:48:18 [DEBUG] DB: Login user admin with max enrollments of -1 and state of 0
+2018/01/31 02:48:19 [DEBUG] Successfully incremented state for identity admin to 1
+2018/01/31 02:48:19 [DEBUG] DB: identity admin successfully logged in
+2018/01/31 02:48:19 [DEBUG] Identity/Pass was correct
+2018/01/31 02:48:19 [DEBUG] Received request for endpoint enroll
+2018/01/31 02:48:19 [DEBUG] Enrollment request: {SignRequest:{Hosts:[] Request:-----BEGIN CERTIFICATE REQUEST-----
+MIHMMHICAQAwEDEOMAwGA1UEAwwFYWRtaW4wWTATBgcqhkjOPQIBBggqhkjOPQMB
+BwNCAATqRPVpL+U6xooZcjtfR3qFbWMrtR6Xv7cjVZeUkrlymbj43lHxflh8rSXh
+AJn2oYHn3wOICPe+cH/tSqDOg4jqoAAwDAYIKoZIzj0EAwIFAANIADBFAiAZUw0H
+gvet3u+ZiC5Xw2c66wNUrAhZW+Gh7A/6M7fsyQIhALQKjAsdKSy1XUgr91CpFLDq
+1OFstJsNTTppL/Pg3b4s
+-----END CERTIFICATE REQUEST-----
+ Subject:<nil> Profile: CRLOverride: Label: Serial:<nil> Extensions:[]} CAName:ca-org1}
+2018/01/31 02:48:19 [DEBUG] csrAuthCheck: enrollment ID=admin, CommonName=admin, Subject=<nil>
+2018/01/31 02:48:19 [DEBUG] CSR authorization check passed
+2018/01/31 02:48:19 [DEBUG] Checking CSR fields to make sure that they do not exceed maximum character limits
+2018/01/31 02:48:19 [INFO] signed certificate with serial number 156436346580050365943445490522847665021479206394
+2018/01/31 02:48:19 [DEBUG] DB: Insert Certificate
+2018/01/31 02:48:19 [DEBUG] Saved serial number as hex 1b66d9302b99e02036e24c90dc795b84b2f2bdfa
+2018/01/31 02:48:19 [DEBUG] saved certificate with serial number 156436346580050365943445490522847665021479206394
+2018/01/31 02:48:19 [INFO] 9.42.95.24:39350 - "POST /api/v1/enroll" 200
+root@zperf-ThinkCentre-M93p:/home/sunhwei#
+=====mps ===
+/home/ibmadmin/fabriccerts/ordererOrganizations/example.com/orderers/orderer.example.com/tlscacerts/example.com-cert.pem
+
+ibmadmin@BCDRI01:~/fabriccerts/ordererOrganizations/example.com/msp/tlscacerts$ ls -lrt
+total 24
+-rw-r--r-- 1 ibmadmin ibmadmin 554 Sep 12 23:28 org2.example.com-tls-cert.pem
+-rw-r--r-- 1 ibmadmin ibmadmin 851 Sep 12 23:28 org2.example.com-cert.pem
+-rw-r--r-- 1 ibmadmin ibmadmin 554 Sep 12 23:28 org1.example.com-tls-cert.pem
+-rw-r--r-- 1 ibmadmin ibmadmin 851 Sep 12 23:28 org1.example.com-cert.pem
+-rw-r--r-- 1 ibmadmin ibmadmin 562 Sep 12 23:28 example.com-tls-cert.pem
+-rw-r--r-- 1 ibmadmin ibmadmin 826 Sep 12 23:28 example.com-cert.pem
+
+sunhwei@zperf-ThinkCentre-M93p:~/zperfconf$ composer runtime install -c PeerAdmin@zperf-network-org1-only -n perishable-iot-network
+
+=====
+
+
+
+ ssl_transport_security.c:921] Handshake failed with fatal error SSL_ERROR_SSL: error:1408F10B:SSL routines:SSL3_GET_RECORD:wrong version number.
+
+=============2018.2.2 =============
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' org2.example.com-cert.pem >  ca-org2.txt
+
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}' org1.example.com-cert.pem > ca-org1.txt
+
+mkdir ~/fabric-tools && cd ~/fabric-tools
+
+curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.tar.gz
+tar -xvf fabric-dev-servers.tar.gz
+
+
+"pem": "-----BEGIN CERTIFICATE-----\nMIICNTCCAdygAwIBAgIRAMNvmQpnXi7uM19BLdha3MwwCgYIKoZIzj0EAwIwbDEL\nMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG\ncmFuY2lzY28xFDASBgNVBAoTC2V4YW1wbGUuY29tMRowGAYDVQQDExF0bHNjYS5l\neGFtcGxlLmNvbTAeFw0xNzA2MjYxMjQ5MjZaFw0yNzA2MjQxMjQ5MjZaMGwxCzAJ\nBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJh\nbmNpc2NvMRQwEgYDVQQKEwtleGFtcGxlLmNvbTEaMBgGA1UEAxMRdGxzY2EuZXhh\nbXBsZS5jb20wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASJn3QUVcKCp+s6lSPE\nP5KlWmE9rEG0kpECsAfW28vZQSIg2Ez+Tp1alA9SYN/5BtL1N6lUUoVhG3lz8uvi\n8zhro18wXTAOBgNVHQ8BAf8EBAMCAaYwDwYDVR0lBAgwBgYEVR0lADAPBgNVHRMB\nAf8EBTADAQH/MCkGA1UdDgQiBCB7ULYTq3+BQqnzwae1RsnwQgJv/HQ5+je2xcDr\nka4MHTAKBggqhkjOPQQDAgNHADBEAiB2hLiS8B1g4J5Qbxu15dVWAZTAXX9xPAvm\n4l25e1oS+gIgBiU/aBwSxY0uambwMB6xtQz0ZE/D4lyTZZcW9SODlOE=\n-----END CERTIFICATE-----\n"
+
+====2018.2.13. === 
+batchrequest ,after bank1 pre 
+[
+  {
+    "$class": "org.acme.fundclearing.BatchTransferRequest",
+    "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501",
+    "settlement": {
+      "$class": "org.acme.fundclearing.Settlement",
+      "ammount": 337.5,
+      "currency": "EURO",
+      "creditorBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+      "debtorBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+    },
+    "state": "PENDING_PRE_PROCESS",
+    "parties": [
+      "resource:org.acme.fundclearing.BankingParticipant#B001",
+      "resource:org.acme.fundclearing.BankingParticipant#B002"
+    ],
+    "transferRequests": [
+      "resource:org.acme.fundclearing.TransferRequest#1111",
+      "resource:org.acme.fundclearing.TransferRequest#2222",
+      "resource:org.acme.fundclearing.TransferRequest#3333"
+    ]
+  }
+]
+=====all transaction status 
+[
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "1111",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "PENDING",
+    "state": "PROCESSING",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "2222",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 25,
+      "fromAccount": 1000002,
+      "toAccount": 1000001
+    },
+    "fromBankState": "PENDING",
+    "toBankState": "PRE_PROCEESS_COMPLETE",
+    "state": "PROCESSING",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "3333",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "PENDING",
+    "state": "PROCESSING",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  }
+]
+=======after bank pre 
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
+   "$class": "org.acme.fundclearing.MarkPreProcessTransferComplete", \ 
+   "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501" \ 
+    \ 
+ }' 'http://9.42.46.101:3002/api/MarkPreProcessTransferComplete'
+ 
+ ====ready to settle ====
+ [
+  {
+    "$class": "org.acme.fundclearing.BatchTransferRequest",
+    "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501",
+    "settlement": {
+      "$class": "org.acme.fundclearing.Settlement",
+      "ammount": 337.5,
+      "currency": "EURO",
+      "creditorBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+      "debtorBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+    },
+    "state": "READY_TO_SETTLE",
+    "parties": [
+      "resource:org.acme.fundclearing.BankingParticipant#B001",
+      "resource:org.acme.fundclearing.BankingParticipant#B002"
+    ],
+    "transferRequests": [
+      "resource:org.acme.fundclearing.TransferRequest#1111",
+      "resource:org.acme.fundclearing.TransferRequest#2222",
+      "resource:org.acme.fundclearing.TransferRequest#3333"
+    ]
+  }
+]
+=====for each transaction request 
+[
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "1111",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "PRE_PROCEESS_COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "2222",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 25,
+      "fromAccount": 1000002,
+      "toAccount": 1000001
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "PRE_PROCEESS_COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "3333",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "PRE_PROCEESS_COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  }
+]
+=======completeSettlement ==== 
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
+   "$class": "org.acme.fundclearing.CompleteSettlement", \ 
+   "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501", \ 
+   "usdRates": [{"$class":"org.acme.fundclearing.ExchangeRate", "to":"EURO","rate":0.75}, \ 
+                {"$class":"org.acme.fundclearing.ExchangeRate", "to":"STERLING","rate":1.75}] \ 
+ }' 'http://9.42.46.101:3002/api/CompleteSettlement'
+ 
+ ---
+ [
+  {
+    "$class": "org.acme.fundclearing.BatchTransferRequest",
+    "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501",
+    "settlement": {
+      "$class": "org.acme.fundclearing.Settlement",
+      "ammount": 337.5,
+      "currency": "EURO",
+      "creditorBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+      "debtorBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+    },
+    "state": "PENDING_POST_PROCESS",
+    "parties": [
+      "resource:org.acme.fundclearing.BankingParticipant#B001",
+      "resource:org.acme.fundclearing.BankingParticipant#B002"
+    ],
+    "transferRequests": [
+      "resource:org.acme.fundclearing.TransferRequest#1111",
+      "resource:org.acme.fundclearing.TransferRequest#2222",
+      "resource:org.acme.fundclearing.TransferRequest#3333"
+    ]
+  }
+]
+ ================mark post process ====
+ curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
+   "$class": "org.acme.fundclearing.MarkPostProcessTransferComplete", \ 
+   "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501" \ 
+   \ 
+ }' 'http://9.42.46.101:3002/api/MarkPostProcessTransferComplete'
+ 
+ ======
+ [
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "1111",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "2222",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 25,
+      "fromAccount": 1000002,
+      "toAccount": 1000001
+    },
+    "fromBankState": "COMPLETE",
+    "toBankState": "PRE_PROCEESS_COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "3333",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "PRE_PROCEESS_COMPLETE",
+    "toBankState": "COMPLETE",
+    "state": "PRE_PROCEESS_COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  }
+]
+----
+[
+  {
+    "$class": "org.acme.fundclearing.BatchTransferRequest",
+    "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501",
+    "settlement": {
+      "$class": "org.acme.fundclearing.Settlement",
+      "ammount": 337.5,
+      "currency": "EURO",
+      "creditorBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+      "debtorBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+    },
+    "state": "PENDING_POST_PROCESS",
+    "parties": [
+      "resource:org.acme.fundclearing.BankingParticipant#B001",
+      "resource:org.acme.fundclearing.BankingParticipant#B002"
+    ],
+    "transferRequests": [
+      "resource:org.acme.fundclearing.TransferRequest#1111",
+      "resource:org.acme.fundclearing.TransferRequest#2222",
+      "resource:org.acme.fundclearing.TransferRequest#3333"
+    ]
+  }
+]
+===after bank1 execute MarkPostProcessTransferComplete ==
+[
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "1111",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "COMPLETE",
+    "toBankState": "COMPLETE",
+    "state": "COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "2222",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 25,
+      "fromAccount": 1000002,
+      "toAccount": 1000001
+    },
+    "fromBankState": "COMPLETE",
+    "toBankState": "COMPLETE",
+    "state": "COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+  },
+  {
+    "$class": "org.acme.fundclearing.TransferRequest",
+    "requestId": "3333",
+    "details": {
+      "$class": "org.acme.fundclearing.Transfer",
+      "currency": "USD",
+      "ammount": 100,
+      "fromAccount": 1000001,
+      "toAccount": 1000002
+    },
+    "fromBankState": "COMPLETE",
+    "toBankState": "COMPLETE",
+    "state": "COMPLETE",
+    "fromBank": "resource:org.acme.fundclearing.BankingParticipant#B001",
+    "toBank": "resource:org.acme.fundclearing.BankingParticipant#B002"
+  }
+]
+=====
+[
+  {
+    "$class": "org.acme.fundclearing.BatchTransferRequest",
+    "batchId": "b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501",
+    "settlement": {
+      "$class": "org.acme.fundclearing.Settlement",
+      "ammount": 337.5,
+      "currency": "EURO",
+      "creditorBank": "resource:org.acme.fundclearing.BankingParticipant#B002",
+      "debtorBank": "resource:org.acme.fundclearing.BankingParticipant#B001"
+    },
+    "state": "COMPLETE",
+    "parties": [
+      "resource:org.acme.fundclearing.BankingParticipant#B001",
+      "resource:org.acme.fundclearing.BankingParticipant#B002"
+    ],
+    "transferRequests": [
+      "resource:org.acme.fundclearing.TransferRequest#1111",
+      "resource:org.acme.fundclearing.TransferRequest#2222",
+      "resource:org.acme.fundclearing.TransferRequest#3333"
+    ]
+  }
+]
+
+
+===
+curl -X GET --header 'Accept: application/json' 'http://9.42.46.101:3001/api/queries/BatchTransferRequestById?batchId=b713e09109f0e1a21703c5454f0dbf4a2cef03a168387fe8f2f50a21bbd1de6501'
